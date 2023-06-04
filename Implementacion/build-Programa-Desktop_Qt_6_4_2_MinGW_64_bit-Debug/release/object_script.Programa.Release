@@ -1,0 +1,11 @@
+release/bird.o
+release/climate_enemies.o
+release/game.o
+release/main.o
+release/main_character.o
+release/mainwindow.o
+release/qrc_Sprites.o
+release/moc_bird.o
+release/moc_game.o
+release/moc_main_character.o
+release/moc_mainwindow.o

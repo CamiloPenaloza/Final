@@ -2,54 +2,77 @@
 
 game::game()
 {
+    gameStarted = false;
     character = new main_character;
     addItem(character);
     character->setPos(100,245);
     character->changecurrentpixmap(0,0);
     character->set_ampliar(3);
 
+
     connect(character, SIGNAL(changemap()),this,SLOT(reset_visual()));
     pp.load(":/sprites/1.png");
     k.setTextureImage(pp);
     setBackgroundBrush(k);
-    imageCounter = 2;
+    imageCounter = 1;
+    level = 0; // Establecer el nivel inicial
+    loadLevel(level);
+
+
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(moveCharacter()));
+    timer->start(30);
+
+//
+    movingUp = false;
+    movingDown = false;
+
 }
 
 game::~game()
 {
     delete character;
+    delete pajaro;
 }
+
 
 void game::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key()==Qt::Key_D){
-        character->moveRight();
-    }
-    if(event->key()==Qt::Key_S){
-        character->moveDown();
-    }
-    if(event->key()==Qt::Key_W){
-        character->moveUp();
-    }
-    if(event->key()==Qt::Key_M){
-        character->muerte();
+    if (event->key() == Qt::Key_S) {
+        movingDown = true;
+    } else if (event->key() == Qt::Key_W) {
+       movingUp = true;
     }
 }
+
+void game::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_S) {
+        movingDown = false;
+    } else if (event->key() == Qt::Key_W) {
+        movingUp = false;
+    }
+}
+
 
 void game::reset_visual()
 {
     character->setPos(-10, 245);
-
     // Obtener la ruta de la imagen actual
     QString imagePath = ":/sprites/" + QString::number(imageCounter) + ".png";
     change_background(imagePath);
 
     // Incrementar el contador de imagen para la siguiente llamada
     imageCounter++;
+    level++;
     if (imageCounter > 3) {
         imageCounter = 1; // Reiniciar el contador si excede el número máximo de imágenes
     }
+
+    // Cargar y configurar el nivel actual
+    loadLevel(level);
 }
+
 
 
 void game::change_background(const QString& imagePath)
@@ -57,5 +80,75 @@ void game::change_background(const QString& imagePath)
     pp.load(imagePath);
     k.setTextureImage(pp);
     setBackgroundBrush(k);
+}
+
+void game::moveCharacter()
+{
+    if (!gameStarted) {
+        return; // Si el juego no ha comenzado, no permitir el movimiento del personaje
+    }
+
+    character->moveRight();
+
+    if (movingUp) {
+        character->moveUp();
+    } else if (movingDown) {
+        character->moveDown();
+    }
+}
+
+void game::moveBird()
+{
+    if (!gameStarted) {
+        return; // Si el juego no ha comenzado, no permitir el movimiento del personaje
+    }
+
+    // Obtener la posición actual del personaje
+    QPointF characterPos = character->pos();
+
+    // Obtener la posición actual del pájaro
+    QPointF birdPos = pajaro->pos();
+
+    // Calcular la dirección hacia el personaje
+    qreal direction = (characterPos.y() < birdPos.y()) ? -1 : 1;
+
+    // Mover el pájaro hacia el personaje en el eje Y
+    if (direction < 0) {
+        pajaro->moveUp();
+    } else {
+        pajaro->moveDown();
+    }
+
+    // Mover el pájaro hacia la izquierda
+    pajaro->moveLeft();
+}
+
+
+
+
+
+void game::loadLevel(int level)
+{
+
+    // Posicionar elementos según el nivel
+    if (level == 1) {
+        // Pajaro
+        pajaro = new bird;
+        addItem(pajaro);
+        pajaro->setPos(1200,245);
+        pajaro->changecurrentpixmap(0,1);
+        pajaro->set_ampliar(5);
+        birdTimer = new QTimer(this);
+        connect(birdTimer, SIGNAL(timeout()), this, SLOT(moveBird()));
+        birdTimer->start(45); // Establece el intervalo de tiempo en milisegundos (ejemplo: 100 ms)
+    } else if (level == 2) {
+        removeItem(pajaro);
+        delete pajaro;
+        pajaro = nullptr;
+        birdTimer->stop();
+        delete birdTimer;
+    }
+    // ...
+
 }
 

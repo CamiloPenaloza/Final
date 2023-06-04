@@ -8,11 +8,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->graphicsView->setVisible(false);
     juego = new game;
-
     juego->setSceneRect(0, 0, ui->graphicsView->width() - 2, ui->graphicsView->height() - 2);
-    cout << ui->graphicsView->width() - 2 << endl;
-    cout << ui->graphicsView->height() - 2 << endl;
     ui->graphicsView->setScene(juego);
 }
 
@@ -21,3 +19,11 @@ MainWindow::~MainWindow()
     delete ui;
     delete juego;
 }
+
+void MainWindow::on_play_button_clicked()
+{
+    juego->gameStarted = true;
+    ui->graphicsView->setVisible(true);
+    ui->menu->setVisible(false);
+}
+

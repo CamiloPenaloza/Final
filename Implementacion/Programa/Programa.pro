@@ -9,12 +9,16 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    bird.cpp \
+    climate_enemies.cpp \
     game.cpp \
     main.cpp \
     main_character.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    bird.h \
+    climate_enemies.h \
     game.h \
     main_character.h \
     mainwindow.h

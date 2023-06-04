@@ -54,7 +54,7 @@ void main_character::moveDown()
 {
     static int anim_count = 0;
     int current_y = y();
-    setY(current_y + 3);
+    setY(current_y + 10);
     changecurrentpixmap(0, 2);
     if (y() != current_y) {
         anim_count++;
@@ -68,7 +68,7 @@ void main_character::moveUp()
     static int anim_count = 0;
     int current_y = y();
     changecurrentpixmap(0,2);
-    setY(current_y - 3);
+    setY(current_y - 10);
     if (y() != current_y) {
         anim_count++;
         int sprite_y = (anim_count / 2) % 8;

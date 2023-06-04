@@ -6,5 +6,7 @@
         <file>sprites/personaje.png</file>
         <file>sprites/player.png</file>
         <file>sprites/prueba.png</file>
+        <file>sprites/menu.png</file>
+        <file>sprites/bird.png</file>
     </qresource>
 </RCC>

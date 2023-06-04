@@ -14,7 +14,6 @@ public:
     ~main_character();
     void changecurrentpixmap(int x, int y);
     void set_ampliar(int ampliar);
-    void moveRight();
     void moveDown();
     void moveUp();
     void muerte();
@@ -22,9 +21,10 @@ private:
     int ampliar;
     QPixmap *pixmap, *currentsprite;
     void cargarnuevosprite();
-
 signals:
     void changemap();
+public slots:
+    void moveRight();
 };
 
 #endif // MAIN_CHARACTER_H
