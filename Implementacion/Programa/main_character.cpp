@@ -2,6 +2,7 @@
 
 main_character::main_character()
 {
+
     pixmap = new QPixmap(":/sprites/personaje.png");
     currentsprite = new QPixmap;
 }

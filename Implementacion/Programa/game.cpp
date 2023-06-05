@@ -182,7 +182,7 @@ void game::checkBottomCollision()
         QMessageBox::information(nullptr, "Perdiste", "Game Over");
 
         // Verificar si el pájaro existe antes de eliminarlo
-        if (pajaro) {
+        if (level == 1) {
             removeItem(pajaro);
             delete pajaro;
             pajaro = nullptr;
