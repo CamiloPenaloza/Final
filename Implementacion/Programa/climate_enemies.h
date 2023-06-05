@@ -5,7 +5,7 @@
 #define height_gota 181
 #define width_fuego 145
 #define height_fuego 46
-
+#define meteoritoPosicion 0
 class climate_enemies : public QGraphicsPixmapItem
 {
 public:

@@ -140,6 +140,28 @@ void game::moveFire()
     fuego->fire_move();
 }
 
+void game::crearMeteoritos()
+{
+    climate_enemies* meteorito = new climate_enemies(2);
+    addItem(meteorito);
+
+    // Incrementa la posición del meteorito
+    meteoritoPosicion += 30;
+
+    // Establece la posición del meteorito
+    int x = 1000 + meteoritoPosicion; // Ajusta la posición horizontal según tus necesidades
+    int y = 0; // Ajusta la posición vertical según tus necesidades
+    meteorito->setPos(x, y);
+
+    meteorito->changecurrentpixmap(3, 0);
+    meteorito->set_ampliar(2);
+    meteorito->setRotation(300);
+
+    fireTimer = new QTimer(this);
+    connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire()));
+    fireTimer->start(40);
+}
+
 
 void game::loadLevel(int level)
 {
@@ -163,16 +185,20 @@ void game::loadLevel(int level)
         birdTimer->stop();
         delete birdTimer;
 
-
+         firestimer = new QTimer(this);
+        firestimer->setInterval(10000); // 20 segundos
+        connect(firestimer, SIGNAL(timeout()), this, SLOT(crearMeteoritos()));
+        meteoritoTimer->start();
         // Enemigo De fuego
-        fuego = new climate_enemies(2);
-        addItem(fuego);
-        fuego->setPos(1200,0);
-        fuego->changecurrentpixmap(3,0);
-        fuego->set_ampliar(3);
-        fireTimer = new QTimer(this);
-        connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire()));
-        fireTimer->start(50);
+//        fuego = new climate_enemies(2);
+//        addItem(fuego);
+//        fuego->setPos(1300,0);
+//        fuego->changecurrentpixmap(3,0);
+//        fuego->set_ampliar(2);
+//        fuego->setRotation(300);
+//        fireTimer = new QTimer(this);
+//        connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire()));
+//        fireTimer->start(40);
     }
 
 }
