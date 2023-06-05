@@ -132,6 +132,14 @@ void game::moveBird()
     pajaro->moveLeft();
 }
 
+void game::moveFire()
+{
+    if (!gameStarted) {
+        return; // Si el juego no ha comenzado, no permitir el movimiento del personaje
+    }
+    fuego->fire_move();
+}
+
 
 void game::loadLevel(int level)
 {
@@ -159,9 +167,12 @@ void game::loadLevel(int level)
         // Enemigo De fuego
         fuego = new climate_enemies(2);
         addItem(fuego);
-        fuego->setPos(0,0);
-        fuego->changecurrentpixmap(1,0);
+        fuego->setPos(1200,0);
+        fuego->changecurrentpixmap(3,0);
         fuego->set_ampliar(3);
+        fireTimer = new QTimer(this);
+        connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire()));
+        fireTimer->start(50);
     }
 
 }

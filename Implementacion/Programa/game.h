@@ -41,6 +41,9 @@ private:
     // Movimientos del birdo XD
     QTimer *birdTimer;
 
+    // Movimiento del meteorito
+    QTimer *fireTimer;
+
 
     //Niveles
     int level;
@@ -55,6 +58,7 @@ private slots:
     void reset_visual();
     void moveCharacter();
     void moveBird();
+    void moveFire();
     void checkCollisions();
 };
 

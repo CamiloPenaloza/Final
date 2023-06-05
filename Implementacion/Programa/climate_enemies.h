@@ -3,8 +3,8 @@
 #define CLIMATE_ENEMIES_H
 #define width_gota 213
 #define height_gota 181
-#define width_fuego 30
-#define height_fuego 35
+#define width_fuego 145
+#define height_fuego 46
 
 class climate_enemies : public QGraphicsPixmapItem
 {
@@ -13,6 +13,7 @@ public:
     ~climate_enemies();
     void changecurrentpixmap(int x, int y);
     void set_ampliar(int ampliar);
+    void fire_move();
 private:
     int ampliar, type;
     void cargarnuevosprite();
