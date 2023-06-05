@@ -16,6 +16,7 @@ public:
     void set_ampliar(int ampliar);
     void moveDown();
     void moveUp();
+    void moveLeft();
     void muerte();
 private:
     int ampliar;

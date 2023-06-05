@@ -970,7 +970,19 @@ release/game.o: ../Programa/game.cpp ../Programa/game.h \
 		C:/Qt/6.4.2/mingw_64/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/6.4.2/mingw_64/include/QtWidgets/qgraphicsitem.h \
 		C:/Qt/6.4.2/mingw_64/include/QtGui/qpainterpath.h \
-		../Programa/bird.h
+		../Programa/bird.h \
+		C:/Qt/6.4.2/mingw_64/include/QtWidgets/QMessageBox \
+		C:/Qt/6.4.2/mingw_64/include/QtWidgets/qmessagebox.h \
+		C:/Qt/6.4.2/mingw_64/include/QtWidgets/qdialog.h \
+		C:/Qt/6.4.2/mingw_64/include/QtWidgets/qwidget.h \
+		C:/Qt/6.4.2/mingw_64/include/QtGui/qaction.h \
+		C:/Qt/6.4.2/mingw_64/include/QtGui/qicon.h \
+		C:/Qt/6.4.2/mingw_64/include/QtGui/qpalette.h \
+		C:/Qt/6.4.2/mingw_64/include/QtGui/qfontmetrics.h \
+		C:/Qt/6.4.2/mingw_64/include/QtGui/qfontinfo.h \
+		C:/Qt/6.4.2/mingw_64/include/QtWidgets/qsizepolicy.h \
+		C:/Qt/6.4.2/mingw_64/include/QtGui/qcursor.h \
+		C:/Qt/6.4.2/mingw_64/include/QtGui/qbitmap.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\game.o ..\Programa\game.cpp
 
 release/main.o: ../Programa/main.cpp ../Programa/mainwindow.h \

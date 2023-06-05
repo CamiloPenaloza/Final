@@ -48,6 +48,9 @@ void main_character::moveRight()
     if(x()>=weight_map){
         emit changemap();
     }
+
+    int current_y = y();
+    setY(current_y + 5);
 }
 
 void main_character::moveDown()
@@ -91,3 +94,8 @@ void main_character::muerte()
 
 
 
+void main_character::moveLeft()
+{
+    int current_x = x();
+    setX(current_x - 5);
+}

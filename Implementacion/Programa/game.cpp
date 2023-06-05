@@ -1,4 +1,5 @@
 #include "game.h"
+#include <QMessageBox>
 
 game::game()
 {
@@ -17,15 +18,16 @@ game::game()
     imageCounter = 1;
     level = 0; // Establecer el nivel inicial
     loadLevel(level);
-
-
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(moveCharacter()));
+
     timer->start(30);
 
 //
     movingUp = false;
     movingDown = false;
+    movingLeft = false;
+//    collisionDetected = false;
 
 }
 
@@ -42,6 +44,8 @@ void game::keyPressEvent(QKeyEvent *event)
         movingDown = true;
     } else if (event->key() == Qt::Key_W) {
        movingUp = true;
+    } else if (event->key() == Qt::Key_A){
+        movingLeft = true;
     }
 }
 
@@ -94,8 +98,13 @@ void game::moveCharacter()
         character->moveUp();
     } else if (movingDown) {
         character->moveDown();
+    } else if (movingLeft){
+        character->moveLeft();
     }
+    checkBottomCollision();
+
 }
+
 
 void game::moveBird()
 {
@@ -124,9 +133,6 @@ void game::moveBird()
 }
 
 
-
-
-
 void game::loadLevel(int level)
 {
 
@@ -140,7 +146,8 @@ void game::loadLevel(int level)
         pajaro->set_ampliar(5);
         birdTimer = new QTimer(this);
         connect(birdTimer, SIGNAL(timeout()), this, SLOT(moveBird()));
-        birdTimer->start(45); // Establece el intervalo de tiempo en milisegundos (ejemplo: 100 ms)
+        birdTimer->start(50); // Establece el intervalo de tiempo en milisegundos (ejemplo: 100 ms)
+        connect(timer, SIGNAL(timeout()), this, SLOT(checkCollisions()));
     } else if (level == 2) {
         removeItem(pajaro);
         delete pajaro;
@@ -151,4 +158,57 @@ void game::loadLevel(int level)
     // ...
 
 }
+
+void game::checkCollisions()
+{
+    if (pajaro && character->collidesWithItem(pajaro)) {
+        QMessageBox::information(nullptr, "Perdiste", "Game Over");
+        removeItem(pajaro);
+        delete pajaro;
+        pajaro = nullptr;
+        birdTimer->stop();
+        delete birdTimer;
+        resetGame();
+    }
+}
+
+void game::checkBottomCollision()
+{
+    qreal characterBottom = character->pos().y() + character->boundingRect().height();
+    qreal sceneBottom = sceneRect().bottom();
+
+    if (characterBottom >= sceneBottom) {
+        // Colisión con el límite inferior
+        QMessageBox::information(nullptr, "Perdiste", "Game Over");
+        resetGame();
+    }
+}
+
+void game::resetGame()
+{
+    level = 0;
+    imageCounter = 1;
+    // Reiniciar el personaje
+    character->setPos(100, 245);
+    character->changecurrentpixmap(0, 0);
+    character->set_ampliar(3);
+
+    // Cargar y configurar el nivel 0
+    loadLevel(level);
+
+    // Reiniciar el fondo
+    pp.load(":/sprites/1.png");
+    k.setTextureImage(pp);
+    setBackgroundBrush(k);
+
+    // Reiniciar el timer del personaje
+    timer->start(30);
+
+    // Reiniciar el estado del movimiento del personaje
+    movingUp = false;
+    movingDown = false;
+}
+
+
+
 

@@ -4,6 +4,7 @@
 #include <QKeyEvent>
 #include <QVector>
 #include <QTimer>
+#include <QObject>
 #include "main_character.h"
 #include "bird.h"
 
@@ -32,6 +33,8 @@ private:
     QTimer *timer;
     bool movingUp;
     bool movingDown;
+    bool movingLeft;
+
 
     // Movimientos del birdo XD
     QTimer *birdTimer;
@@ -40,13 +43,17 @@ private:
     //Niveles
     int level;
     void loadLevel(int level);
+    void resetGame();
 
+    // Colisiones
+    bool collisionDetected;
+    void checkBottomCollision();
 
 private slots:
     void reset_visual();
     void moveCharacter();
     void moveBird();
-
+    void checkCollisions();
 };
 
 #endif // GAME_H
