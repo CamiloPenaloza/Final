@@ -180,9 +180,20 @@ void game::checkBottomCollision()
     if (characterBottom >= sceneBottom) {
         // Colisión con el límite inferior
         QMessageBox::information(nullptr, "Perdiste", "Game Over");
+
+        // Verificar si el pájaro existe antes de eliminarlo
+        if (pajaro) {
+            removeItem(pajaro);
+            delete pajaro;
+            pajaro = nullptr;
+            birdTimer->stop();
+            delete birdTimer;
+        }
+
         resetGame();
     }
 }
+
 
 void game::resetGame()
 {
