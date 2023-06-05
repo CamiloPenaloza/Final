@@ -154,8 +154,15 @@ void game::loadLevel(int level)
         pajaro = nullptr;
         birdTimer->stop();
         delete birdTimer;
+
+
+        // Enemigo De fuego
+        fuego = new climate_enemies(2);
+        addItem(fuego);
+        fuego->setPos(0,0);
+        fuego->changecurrentpixmap(1,0);
+        fuego->set_ampliar(3);
     }
-    // ...
 
 }
 
@@ -180,19 +187,17 @@ void game::checkBottomCollision()
     if (characterBottom >= sceneBottom) {
         // Colisión con el límite inferior
         QMessageBox::information(nullptr, "Perdiste", "Game Over");
-
-        // Verificar si el pájaro existe antes de eliminarlo
-        if (pajaro) {
-            removeItem(pajaro);
-            delete pajaro;
-            pajaro = nullptr;
-            birdTimer->stop();
-            delete birdTimer;
+        if (level == 1) {
+               removeItem(pajaro);
+               delete pajaro;
+               pajaro = nullptr;
+               birdTimer->stop();
+               delete birdTimer;
         }
-
         resetGame();
     }
 }
+
 
 
 void game::resetGame()
@@ -219,7 +224,4 @@ void game::resetGame()
     movingUp = false;
     movingDown = false;
 }
-
-
-
 

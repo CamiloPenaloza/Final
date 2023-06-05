@@ -8,5 +8,7 @@
         <file>sprites/prueba.png</file>
         <file>sprites/menu.png</file>
         <file>sprites/bird.png</file>
+        <file>sprites/fire.png</file>
+        <file>sprites/gota.png</file>
     </qresource>
 </RCC>

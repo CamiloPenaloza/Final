@@ -7,6 +7,7 @@
 #include <QObject>
 #include "main_character.h"
 #include "bird.h"
+#include "climate_enemies.h"
 
 #define weight_map 1201
 #define hight_map 500
@@ -23,6 +24,7 @@ public:
 private:
     main_character *character, *ch;
     bird *pajaro, *br;
+    climate_enemies *fuego, *fg;
     QBrush k;
     QImage pp;
     void change_background(const QString& imagePath);
