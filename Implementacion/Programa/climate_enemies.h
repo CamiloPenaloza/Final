@@ -5,7 +5,7 @@
 #define height_gota 181
 #define width_fuego 145
 #define height_fuego 46
-#define meteoritoPosicion 0
+
 class climate_enemies : public QGraphicsPixmapItem
 {
 public:
@@ -13,7 +13,7 @@ public:
     ~climate_enemies();
     void changecurrentpixmap(int x, int y);
     void set_ampliar(int ampliar);
-    void fire_move();
+    void fire_move(int x_move, int y_move);
 private:
     int ampliar, type;
     void cargarnuevosprite();

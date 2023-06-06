@@ -31,14 +31,14 @@ void climate_enemies::set_ampliar(int ampliar)
     cargarnuevosprite();
 }
 
-void climate_enemies::fire_move()
+void climate_enemies::fire_move(int x_move, int y_move)
 {
     static int anim_count = 0;
     int current_x = x();
     changecurrentpixmap(0,1);
-    setX(current_x - 10);
+    setX(current_x - x_move);
     int current_y = y();
-    setY(current_y + 10);
+    setY(current_y + y_move);
     // Cambiar la imagen del sprite si se ha movido lo suficiente
     if (x() != current_x) {
         anim_count++;

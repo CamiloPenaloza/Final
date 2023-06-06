@@ -132,30 +132,38 @@ void game::moveBird()
     pajaro->moveLeft();
 }
 
-void game::moveFire()
+void game::moveFire1()
 {
     if (!gameStarted) {
         return; // Si el juego no ha comenzado, no permitir el movimiento del personaje
     }
-    fuego->fire_move();
+    fuego->fire_move(5, 5);
+
+}
+void game::moveFire2()
+{
+    if (!gameStarted) {
+        return; // Si el juego no ha comenzado, no permitir el movimiento del personaje
+    }
+    fg->fire_move(10, 10);
+
 }
 
 void game::crearMeteoritos()
 {
-    climate_enemies* meteorito = new climate_enemies(2);
-    addItem(meteorito);
+    fuego = new climate_enemies(2);
+    addItem(fuego);
+    // Incrementa la posición del fuego
+    fuegoPosicion += 30;
 
-    // Incrementa la posición del meteorito
-    meteoritoPosicion += 30;
-
-    // Establece la posición del meteorito
-    int x = 1000 + meteoritoPosicion; // Ajusta la posición horizontal según tus necesidades
+    // Establece la posición del fuego
+    int x = 1000 + fuegoPosicion; // Ajusta la posición horizontal según tus necesidades
     int y = 0; // Ajusta la posición vertical según tus necesidades
-    meteorito->setPos(x, y);
+    fuego->setPos(x, y);
 
-    meteorito->changecurrentpixmap(3, 0);
-    meteorito->set_ampliar(2);
-    meteorito->setRotation(300);
+    fuego->changecurrentpixmap(3, 0);
+    fuego->set_ampliar(2);
+    fuego->setRotation(300);
 
     fireTimer = new QTimer(this);
     connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire()));
@@ -184,21 +192,41 @@ void game::loadLevel(int level)
         pajaro = nullptr;
         birdTimer->stop();
         delete birdTimer;
-
-         firestimer = new QTimer(this);
-        firestimer->setInterval(10000); // 20 segundos
-        connect(firestimer, SIGNAL(timeout()), this, SLOT(crearMeteoritos()));
-        meteoritoTimer->start();
         // Enemigo De fuego
-//        fuego = new climate_enemies(2);
-//        addItem(fuego);
-//        fuego->setPos(1300,0);
-//        fuego->changecurrentpixmap(3,0);
-//        fuego->set_ampliar(2);
-//        fuego->setRotation(300);
-//        fireTimer = new QTimer(this);
-//        connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire()));
-//        fireTimer->start(40);
+        // Fuego 1
+        fuego = new climate_enemies(2);
+        addItem(fuego);
+        fuego->setPos(900,0);
+        fuego->changecurrentpixmap(3,0);
+        fuego->set_ampliar(2);
+        fuego->setRotation(320);
+        fireTimer = new QTimer(this);
+        fireTimer->setInterval(100);
+        connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire1()));
+        fireTimer->start(40);
+        // Fuego 2
+       fg = new climate_enemies(2);
+       addItem(fg);
+       fg->setPos(1500,-20);
+       fg->changecurrentpixmap(3,0);
+       fg->set_ampliar(2);
+       fg->setRotation(300);
+       fireTimer->setInterval(1000);
+       connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire2()));
+       fireTimer->start(40);
+
+    } else if (level == 3) {
+        removeItem(fuego);
+        delete fuego;
+        fuego = nullptr;
+        removeItem(fg);
+        delete fg;
+        fg = nullptr;
+        fireTimer->stop();
+        delete fireTimer;
+
+    }  else if (level == 4) {
+
     }
 
 }
@@ -212,6 +240,18 @@ void game::checkCollisions()
         pajaro = nullptr;
         birdTimer->stop();
         delete birdTimer;
+        resetGame();
+    }
+    else if ((fuego && character->collidesWithItem(fuego))||(fg && character->collidesWithItem(fg))) {
+        QMessageBox::information(nullptr, "Perdiste", "Game Over");
+        removeItem(fuego);
+        delete fuego;
+        fuego = nullptr;
+        removeItem(fg);
+        delete fg;
+        fg = nullptr;
+        fireTimer->stop();
+        delete fireTimer;
         resetGame();
     }
 }

@@ -22,6 +22,7 @@ public:
     void keyReleaseEvent(QKeyEvent *event);
     bool gameStarted;
 private:
+     int fuegoPosicion = 0;
     main_character *character, *ch;
     bird *pajaro, *br;
     climate_enemies *fuego, *fg;
@@ -59,7 +60,8 @@ private slots:
     void reset_visual();
     void moveCharacter();
     void moveBird();
-    void moveFire();
+    void moveFire1();
+    void moveFire2();
     void crearMeteoritos();
     void checkCollisions();
 };
