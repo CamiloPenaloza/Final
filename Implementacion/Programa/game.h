@@ -26,6 +26,7 @@ private:
     main_character *character, *ch;
     bird *pajaro, *br;
     climate_enemies *fuego, *fg;
+
     QBrush k;
     QImage pp;
     void change_background(const QString& imagePath);
@@ -39,8 +40,9 @@ private:
     bool movingLeft;
 
 
-    // Movimientos del birdo XD
+    //Pajaro
     QTimer *birdTimer;
+    void removeBird();
 
     // Movimiento del meteorito
     QTimer *fireTimer;
@@ -54,12 +56,21 @@ private:
     bool collisionDetected;
     void checkBottomCollision();
 
+
+    // Lluvia
+    void createRaindrops();
+    void checkCollisionsG();
+
 private slots:
     void reset_visual();
     void moveCharacter();
     void moveBird();
+
+    // Fuegos nivel 2
     void moveFire1();
     void moveFire2();
+
+    //
     void checkCollisions();
 };
 

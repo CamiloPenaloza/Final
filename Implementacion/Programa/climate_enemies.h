@@ -1,8 +1,8 @@
 #include <QGraphicsPixmapItem>
 #ifndef CLIMATE_ENEMIES_H
 #define CLIMATE_ENEMIES_H
-#define width_gota 213
-#define height_gota 181
+#define width_gota 46
+#define height_gota 79
 #define width_fuego 145
 #define height_fuego 46
 

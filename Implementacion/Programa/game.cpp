@@ -86,6 +86,8 @@ void game::change_background(const QString& imagePath)
     setBackgroundBrush(k);
 }
 
+
+
 void game::moveCharacter()
 {
     if (!gameStarted) {
@@ -102,6 +104,10 @@ void game::moveCharacter()
         character->moveLeft();
     }
     checkBottomCollision();
+
+    if (level == 3 ){
+        checkCollisionsG();
+    }
 
 }
 
@@ -149,6 +155,55 @@ void game::moveFire2()
 
 }
 
+
+void game::createRaindrops()
+{
+    // Crear múltiples gotas de lluvia
+    const int numRaindrops = 4;      // Cantidad de gotas de lluvia
+    const int startX = 100;          // Posición inicial en el eje X
+    const int startY = -100;          // Posición inicial en el eje Y
+    const int distance = 350;        // Distancia entre las gotas de lluvia
+    const int delay = 500;           // Retraso en milisegundos entre cada generación de gota
+    const qreal gravity = 500;       // Aceleración de la gravedad
+
+    for (int i = 0; i < numRaindrops; i++) {
+        QTimer::singleShot(i * delay, this, [=]() {
+            climate_enemies*gotas = new climate_enemies(1);
+            addItem(gotas);
+            gotas->setPos(startX + i * distance, startY);
+            gotas->changecurrentpixmap(0, 0);
+            gotas->set_ampliar(1);
+
+            QTimer* timer = new QTimer(this);
+            connect(timer, &QTimer::timeout,this, [=]() {
+                // Calcular el tiempo transcurrido desde el último intervalo del temporizador
+                qreal dt = timer->interval() / 1000.0;  // Convertir de milisegundos a segundos
+
+                // Calcular la velocidad y la nueva posición de la gota en función de la caída libre
+                qreal vy = gravity * dt;
+                qreal newY = gotas->y() + vy;
+
+                // Actualizar la posición de la gota
+                gotas->setPos(gotas->x(), newY);
+
+
+
+                // Si la gota ha caído fuera de la pantalla, eliminarla
+                if (gotas->y() > sceneRect().height()) {
+                    removeItem(gotas);
+                    delete gotas;
+                    timer->stop();
+                    timer->deleteLater();
+                }
+            });
+
+            // Establecer la frecuencia de actualización del temporizador (en milisegundos)
+            timer->setInterval(16);  // Aproximadamente 60 FPS
+            timer->start();
+        });
+    }
+}
+
 void game::loadLevel(int level)
 {
 
@@ -165,11 +220,7 @@ void game::loadLevel(int level)
         birdTimer->start(50); // Establece el intervalo de tiempo en milisegundos (ejemplo: 100 ms)
         connect(timer, SIGNAL(timeout()), this, SLOT(checkCollisions()));
     } else if (level == 2) {
-        removeItem(pajaro);
-        delete pajaro;
-        pajaro = nullptr;
-        birdTimer->stop();
-        delete birdTimer;
+        removeBird();
         // Enemigo De fuego
         // Fuego 1
         fuego = new climate_enemies(2);
@@ -203,6 +254,8 @@ void game::loadLevel(int level)
         fireTimer->stop();
         delete fireTimer;
 
+
+        createRaindrops();
     }
 }
 
@@ -210,11 +263,7 @@ void game::checkCollisions()
 {
     if (pajaro && character->collidesWithItem(pajaro)) {
         QMessageBox::information(nullptr, "Perdiste", "Game Over");
-        removeItem(pajaro);
-        delete pajaro;
-        pajaro = nullptr;
-        birdTimer->stop();
-        delete birdTimer;
+        removeBird();
         resetGame();
     }
     else if ((fuego && character->collidesWithItem(fuego))||(fg && character->collidesWithItem(fg))) {
@@ -240,11 +289,18 @@ void game::checkBottomCollision()
         // Colisión con el límite inferior
         QMessageBox::information(nullptr, "Perdiste", "Game Over");
         if (level == 1) {
-               removeItem(pajaro);
-               delete pajaro;
-               pajaro = nullptr;
-               birdTimer->stop();
-               delete birdTimer;
+            removeBird();
+        }
+
+        if(level == 2){
+            removeItem(fuego);
+            delete fuego;
+            fuego = nullptr;
+            removeItem(fg);
+            delete fg;
+            fg = nullptr;
+            fireTimer->stop();
+            delete fireTimer;
         }
         resetGame();
     }
@@ -254,6 +310,7 @@ void game::checkBottomCollision()
 
 void game::resetGame()
 {
+
     level = 0;
     imageCounter = 1;
     // Reiniciar el personaje
@@ -277,3 +334,33 @@ void game::resetGame()
     movingDown = false;
 }
 
+void game::removeBird()
+{
+    removeItem(pajaro);
+    delete pajaro;
+    pajaro = nullptr;
+    birdTimer->stop();
+    delete birdTimer;
+}
+
+void game::checkCollisionsG()
+{
+    QList<QGraphicsItem*> collisions = character->collidingItems();
+    foreach (QGraphicsItem* item, collisions) {
+        if (item->type() == climate_enemies::Type) {
+            QMessageBox::information(nullptr, "Perdiste", "Game Over");
+
+            // Ocultar las gotas de lluvia
+            QList<QGraphicsItem*> sceneItems = items();
+            foreach (QGraphicsItem* sceneItem, sceneItems) {
+                climate_enemies* gotas = dynamic_cast<climate_enemies*>(sceneItem);
+                if (gotas != nullptr) {
+                    gotas->hide();
+                }
+            }
+
+            resetGame();
+            return; // Salir de la función para evitar colisiones adicionales en el mismo nivel
+        }
+    }
+}
