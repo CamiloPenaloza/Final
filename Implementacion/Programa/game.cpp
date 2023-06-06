@@ -86,6 +86,13 @@ void game::change_background(const QString& imagePath)
     setBackgroundBrush(k);
 }
 
+void game::rutinaMuerte()
+{
+    timerMuerte = new QTimer(this);
+    timerMuerte->start(40);
+    connect(timerMuerte, SIGNAL(timeout()), this, SLOT(muerteCharacter()));
+}
+
 
 
 void game::moveCharacter()
@@ -109,6 +116,11 @@ void game::moveCharacter()
         checkCollisionsG();
     }
 
+}
+
+void game::muerteCharacter()
+{
+    character->muerte();
 }
 
 
@@ -222,60 +234,36 @@ void game::loadLevel(int level)
     } else if (level == 2) {
         removeBird();
         // Enemigo De fuego
-        // Fuego 1
-        fuego = new climate_enemies(2);
-        addItem(fuego);
-        fuego->setPos(900,0);
-        fuego->changecurrentpixmap(3,0);
-        fuego->set_ampliar(2);
-        fuego->setRotation(320);
-        fireTimer = new QTimer(this);
-        fireTimer->setInterval(100);
-        connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire1()));
-        fireTimer->start(40);
-        // Fuego 2
-       fg = new climate_enemies(2);
-       addItem(fg);
-       fg->setPos(1500,-20);
-       fg->changecurrentpixmap(3,0);
-       fg->set_ampliar(2);
-       fg->setRotation(300);
-       fireTimer->setInterval(1000);
-       connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire2()));
-       fireTimer->start(40);
+        createMeteoito();
 
     } else if (level == 3) {
-        removeItem(fuego);
-        delete fuego;
-        fuego = nullptr;
-        removeItem(fg);
-        delete fg;
-        fg = nullptr;
-        fireTimer->stop();
-        delete fireTimer;
-
-
+        removeMeteoito();
+        // funcion que crea los enemigos tipo gota
         createRaindrops();
+
+    } else if (level == 4) {
+
+        zoneSecure = new save_zone();
+        addItem(zoneSecure);
+        zoneSecure->setPos(850,300);
+        zoneSecure->changecurrentpixmap(0,0);
+        zoneSecure->set_ampliar(1);
+
     }
 }
 
 void game::checkCollisions()
 {
     if (pajaro && character->collidesWithItem(pajaro)) {
+        rutinaMuerte();
         QMessageBox::information(nullptr, "Perdiste", "Game Over");
         removeBird();
         resetGame();
     }
     else if ((fuego && character->collidesWithItem(fuego))||(fg && character->collidesWithItem(fg))) {
+        rutinaMuerte();
         QMessageBox::information(nullptr, "Perdiste", "Game Over");
-        removeItem(fuego);
-        delete fuego;
-        fuego = nullptr;
-        removeItem(fg);
-        delete fg;
-        fg = nullptr;
-        fireTimer->stop();
-        delete fireTimer;
+        removeMeteoito();
         resetGame();
     }
 }
@@ -287,20 +275,16 @@ void game::checkBottomCollision()
 
     if (characterBottom >= sceneBottom) {
         // Colisión con el límite inferior
+        rutinaMuerte();
+        //timerMuerte->setInterval(1000);
         QMessageBox::information(nullptr, "Perdiste", "Game Over");
+
         if (level == 1) {
+
             removeBird();
         }
-
         if(level == 2){
-            removeItem(fuego);
-            delete fuego;
-            fuego = nullptr;
-            removeItem(fg);
-            delete fg;
-            fg = nullptr;
-            fireTimer->stop();
-            delete fireTimer;
+            removeMeteoito();
         }
         resetGame();
     }
@@ -328,6 +312,9 @@ void game::resetGame()
 
     // Reiniciar el timer del personaje
     timer->start(30);
+    timerMuerte->stop();
+    delete timerMuerte;
+   // connect(timer, SIGNAL(timeout()), this, SLOT(moveCharacter()));
 
     // Reiniciar el estado del movimiento del personaje
     movingUp = false;
@@ -343,11 +330,49 @@ void game::removeBird()
     delete birdTimer;
 }
 
+void game::createMeteoito()
+{
+    // Fuego 1
+    fuego = new climate_enemies(2);
+    addItem(fuego);
+    fuego->setPos(900,0);
+    fuego->changecurrentpixmap(3,0);
+    fuego->set_ampliar(2);
+    fuego->setRotation(320);
+    fireTimer = new QTimer(this);
+    fireTimer->setInterval(100);
+    connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire1()));
+    fireTimer->start(40);
+    // Fuego 2
+   fg = new climate_enemies(2);
+   addItem(fg);
+   fg->setPos(1500,-20);
+   fg->changecurrentpixmap(3,0);
+   fg->set_ampliar(2);
+   fg->setRotation(300);
+   fireTimer->setInterval(1000);
+   connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire2()));
+   fireTimer->start(40);
+}
+
+void game::removeMeteoito()
+{
+    removeItem(fuego);
+    delete fuego;
+    fuego = nullptr;
+    removeItem(fg);
+    delete fg;
+    fg = nullptr;
+    fireTimer->stop();
+    delete fireTimer;
+}
+
 void game::checkCollisionsG()
 {
     QList<QGraphicsItem*> collisions = character->collidingItems();
     foreach (QGraphicsItem* item, collisions) {
         if (item->type() == climate_enemies::Type) {
+            rutinaMuerte();
             QMessageBox::information(nullptr, "Perdiste", "Game Over");
 
             // Ocultar las gotas de lluvia
@@ -358,7 +383,6 @@ void game::checkCollisionsG()
                     gotas->hide();
                 }
             }
-
             resetGame();
             return; // Salir de la función para evitar colisiones adicionales en el mismo nivel
         }

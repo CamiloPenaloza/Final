@@ -83,7 +83,7 @@ void main_character::muerte()
 {
     static int anim_count = 0;
     int current_y = y();
-    setY(current_y + 3);
+    setY(current_y + 1);
     changecurrentpixmap(0, 3);
     if (y() != current_y) {
         anim_count++;

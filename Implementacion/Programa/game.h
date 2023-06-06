@@ -8,7 +8,7 @@
 #include "main_character.h"
 #include "bird.h"
 #include "climate_enemies.h"
-
+#include "save_zone.h"
 #define weight_map 1201
 #define hight_map 500
 
@@ -25,6 +25,7 @@ private:
      int fuegoPosicion = 0;
     main_character *character, *ch;
     bird *pajaro, *br;
+    save_zone *zoneSecure;
     climate_enemies *fuego, *fg;
 
     QBrush k;
@@ -35,17 +36,21 @@ private:
 
     // Movimientos del personaje
     QTimer *timer;
+    QTimer *timerMuerte;
     bool movingUp;
     bool movingDown;
     bool movingLeft;
+    void rutinaMuerte();
 
 
     //Pajaro
     QTimer *birdTimer;
     void removeBird();
 
-    // Movimiento del meteorito
+    // meteorito
     QTimer *fireTimer;
+    void createMeteoito();
+    void removeMeteoito();
 
     //Niveles
     int level;
@@ -64,6 +69,7 @@ private:
 private slots:
     void reset_visual();
     void moveCharacter();
+    void muerteCharacter();
     void moveBird();
 
     // Fuegos nivel 2

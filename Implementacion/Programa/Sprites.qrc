@@ -10,5 +10,6 @@
         <file>sprites/bird.png</file>
         <file>sprites/fire.png</file>
         <file>sprites/gota.png</file>
+        <file>sprites/Polycount-Forum.png</file>
     </qresource>
 </RCC>

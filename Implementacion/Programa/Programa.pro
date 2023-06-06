@@ -14,14 +14,16 @@ SOURCES += \
     game.cpp \
     main.cpp \
     main_character.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    save_zone.cpp
 
 HEADERS += \
     bird.h \
     climate_enemies.h \
     game.h \
     main_character.h \
-    mainwindow.h
+    mainwindow.h \
+    save_zone.h
 
 FORMS += \
     mainwindow.ui
