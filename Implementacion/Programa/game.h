@@ -44,8 +44,6 @@ private:
 
     // Movimiento del meteorito
     QTimer *fireTimer;
-    QTimer *firestimer; //este timer es para que cree los meteoros necesarios
-
 
     //Niveles
     int level;
@@ -62,7 +60,6 @@ private slots:
     void moveBird();
     void moveFire1();
     void moveFire2();
-    void crearMeteoritos();
     void checkCollisions();
 };
 

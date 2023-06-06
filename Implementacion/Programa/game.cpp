@@ -149,28 +149,6 @@ void game::moveFire2()
 
 }
 
-void game::crearMeteoritos()
-{
-    fuego = new climate_enemies(2);
-    addItem(fuego);
-    // Incrementa la posición del fuego
-    fuegoPosicion += 30;
-
-    // Establece la posición del fuego
-    int x = 1000 + fuegoPosicion; // Ajusta la posición horizontal según tus necesidades
-    int y = 0; // Ajusta la posición vertical según tus necesidades
-    fuego->setPos(x, y);
-
-    fuego->changecurrentpixmap(3, 0);
-    fuego->set_ampliar(2);
-    fuego->setRotation(300);
-
-    fireTimer = new QTimer(this);
-    connect(fireTimer, SIGNAL(timeout()), this, SLOT(moveFire()));
-    fireTimer->start(40);
-}
-
-
 void game::loadLevel(int level)
 {
 
@@ -225,10 +203,7 @@ void game::loadLevel(int level)
         fireTimer->stop();
         delete fireTimer;
 
-    }  else if (level == 4) {
-
     }
-
 }
 
 void game::checkCollisions()
