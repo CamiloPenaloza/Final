@@ -323,6 +323,10 @@ void game::checkBottomCollision()
         if(level == 3){
             hideRainDrops();
         }
+        if(level == 4){
+            removeBird();
+            removeSegureZone();
+        }
         resetGame();
     }
 }
@@ -348,6 +352,10 @@ void game::checkCeilingCollision()
         }
         if(level == 3){
             hideRainDrops();
+        }
+        if(level == 4){
+            removeBird();
+            removeSegureZone();
         }
         resetGame();
     }

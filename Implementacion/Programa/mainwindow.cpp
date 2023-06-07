@@ -3,11 +3,12 @@
 #include <iostream>
 using namespace std;
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent):
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowFlags(Qt::Window | Qt::MSWindowsFixedSizeDialogHint);
     ui->graphicsView->setVisible(false);
     ui->puntaje->setVisible(false);
     juego = new game;

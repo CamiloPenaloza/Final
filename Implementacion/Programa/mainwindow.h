@@ -6,8 +6,8 @@
 #include <QMessageBox>
 #define weight 1201
 #define hight 500
-//22
-//12
+
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE

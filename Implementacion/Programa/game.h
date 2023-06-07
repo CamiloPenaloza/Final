@@ -22,7 +22,7 @@ public:
     void keyReleaseEvent(QKeyEvent *event);
     bool gameStarted;
 private:
-     int fuegoPosicion = 0;
+    int fuegoPosicion = 0;
     main_character *character, *ch;
     bird *pajaro, *br;
     save_zone *zoneSecure;
