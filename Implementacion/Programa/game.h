@@ -2,9 +2,9 @@
 #define GAME_H
 #include <QGraphicsScene>
 #include <QKeyEvent>
-#include <QVector>
 #include <QTimer>
 #include <QObject>
+#include <QString>
 #include "main_character.h"
 #include "bird.h"
 #include "climate_enemies.h"
@@ -58,13 +58,25 @@ private:
     void resetGame();
 
     // Colisiones
-    bool collisionDetected;
     void checkBottomCollision();
+    void checkCeilingCollision();
 
 
     // Lluvia
     void createRaindrops();
     void checkCollisionsG();
+    void hideRainDrops();
+
+
+   // Zona segura
+    void createSegureZone();
+    void removeSegureZone();
+
+
+    // Puntaje
+
+    int puntaje;
+    void updatePuntaje();
 
 private slots:
     void reset_visual();
@@ -78,6 +90,9 @@ private slots:
 
     //
     void checkCollisions();
+
+signals:
+    void updatePuntajeSignal(const QString& puntaje);
 };
 
 #endif // GAME_H

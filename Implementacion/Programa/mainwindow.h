@@ -20,8 +20,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private slots:
-
     void on_play_button_clicked();
+    void updatePuntaje(const QString& puntaje);
 
 private:
     Ui::MainWindow *ui;

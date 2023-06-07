@@ -9,7 +9,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->graphicsView->setVisible(false);
+    ui->puntaje->setVisible(false);
     juego = new game;
+    connect(juego, &game::updatePuntajeSignal, this, &MainWindow::updatePuntaje);
     juego->setSceneRect(0, 0, ui->graphicsView->width() - 2, ui->graphicsView->height() - 2);
     ui->graphicsView->setScene(juego);
 }
@@ -25,5 +27,10 @@ void MainWindow::on_play_button_clicked()
     juego->gameStarted = true;
     ui->graphicsView->setVisible(true);
     ui->menu->setVisible(false);
+    ui->puntaje->setVisible(true);
 }
 
+void MainWindow::updatePuntaje(const QString& puntaje)
+{
+    ui->puntaje->setText(puntaje);
+}

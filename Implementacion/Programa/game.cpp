@@ -27,8 +27,8 @@ game::game()
     movingUp = false;
     movingDown = false;
     movingLeft = false;
-//    collisionDetected = false;
 
+    puntaje = 500;
 }
 
 game::~game()
@@ -89,8 +89,8 @@ void game::change_background(const QString& imagePath)
 void game::rutinaMuerte()
 {
     timerMuerte = new QTimer(this);
-    timerMuerte->start(40);
     connect(timerMuerte, SIGNAL(timeout()), this, SLOT(muerteCharacter()));
+    timerMuerte->start(40);
 }
 
 
@@ -105,6 +105,7 @@ void game::moveCharacter()
 
     if (movingUp) {
         character->moveUp();
+        checkCeilingCollision();
     } else if (movingDown) {
         character->moveDown();
     } else if (movingLeft){
@@ -242,29 +243,61 @@ void game::loadLevel(int level)
         createRaindrops();
 
     } else if (level == 4) {
-
-        zoneSecure = new save_zone();
-        addItem(zoneSecure);
-        zoneSecure->setPos(850,300);
-        zoneSecure->changecurrentpixmap(0,0);
-        zoneSecure->set_ampliar(1);
-
+        createSegureZone();
+        pajaro = new bird;
+        addItem(pajaro);
+        pajaro->setPos(1200,400);
+        pajaro->changecurrentpixmap(0,1);
+        pajaro->set_ampliar(5);
+        birdTimer = new QTimer(this);
+        connect(birdTimer, SIGNAL(timeout()), this, SLOT(moveBird()));
+        birdTimer->start(50); // Establece el intervalo de tiempo en milisegundos (ejemplo: 100 ms)
+        connect(timer, SIGNAL(timeout()), this, SLOT(checkCollisions()));
     }
 }
 
 void game::checkCollisions()
 {
-    if (pajaro && character->collidesWithItem(pajaro)) {
-        rutinaMuerte();
-        QMessageBox::information(nullptr, "Perdiste", "Game Over");
-        removeBird();
-        resetGame();
+    if(level == 1){
+        if (pajaro && character->collidesWithItem(pajaro)) {
+            puntaje -=50;
+            updatePuntaje();
+            rutinaMuerte();
+            QMessageBox::information(nullptr, "Perdiste", "Game Over");
+            removeBird();
+            resetGame();
+        }
     }
-    else if ((fuego && character->collidesWithItem(fuego))||(fg && character->collidesWithItem(fg))) {
-        rutinaMuerte();
-        QMessageBox::information(nullptr, "Perdiste", "Game Over");
-        removeMeteoito();
-        resetGame();
+    else if (level == 2) {
+        if ((fuego && character->collidesWithItem(fuego))||(fg && character->collidesWithItem(fg))) {
+            puntaje -=30;
+            updatePuntaje();
+            rutinaMuerte();
+            QMessageBox::information(nullptr, "Perdiste", "Game Over");
+            removeMeteoito();
+            resetGame();
+        }
+    }
+    else if (level == 4) {
+        if (zoneSecure && character->collidesWithItem(zoneSecure) ) {
+            QString puntajeString = QString::number(puntaje);
+            QString mensaje = "GANASTE\n\nPuntaje: " + puntajeString;
+            QMessageBox::information(nullptr, "WIN", mensaje);
+            puntaje +=50;
+            updatePuntaje();
+            rutinaMuerte();
+            removeBird();
+            removeSegureZone();
+            resetGame();
+        }else if((character->x()+character_x_size >= weight_map) || (pajaro && character->collidesWithItem(pajaro)) ){
+            puntaje -=100;
+            updatePuntaje();
+            rutinaMuerte();
+            QMessageBox::information(nullptr, "Perdiste", "Game Over");
+            removeSegureZone();
+            removeBird();
+            resetGame();
+        }
     }
 }
 
@@ -274,22 +307,51 @@ void game::checkBottomCollision()
     qreal sceneBottom = sceneRect().bottom();
 
     if (characterBottom >= sceneBottom) {
+        puntaje -=30;
+        updatePuntaje();
         // Colisión con el límite inferior
         rutinaMuerte();
         //timerMuerte->setInterval(1000);
         QMessageBox::information(nullptr, "Perdiste", "Game Over");
 
         if (level == 1) {
-
             removeBird();
         }
         if(level == 2){
             removeMeteoito();
         }
+        if(level == 3){
+            hideRainDrops();
+        }
         resetGame();
     }
 }
 
+void game::checkCeilingCollision()
+{
+    qreal characterTop = character->pos().y();
+    qreal sceneCeiling = sceneRect().top();
+
+    if (characterTop <= sceneCeiling) {
+        puntaje -=30;
+        updatePuntaje();
+        // Colisión con el límite inferior
+        rutinaMuerte();
+        //timerMuerte->setInterval(1000);
+        QMessageBox::information(nullptr, "Perdiste", "Game Over");
+
+        if (level == 1) {
+            removeBird();
+        }
+        if(level == 2){
+            removeMeteoito();
+        }
+        if(level == 3){
+            hideRainDrops();
+        }
+        resetGame();
+    }
+}
 
 
 void game::resetGame()
@@ -372,19 +434,53 @@ void game::checkCollisionsG()
     QList<QGraphicsItem*> collisions = character->collidingItems();
     foreach (QGraphicsItem* item, collisions) {
         if (item->type() == climate_enemies::Type) {
+            puntaje -=10;
+            updatePuntaje();
             rutinaMuerte();
             QMessageBox::information(nullptr, "Perdiste", "Game Over");
 
             // Ocultar las gotas de lluvia
-            QList<QGraphicsItem*> sceneItems = items();
-            foreach (QGraphicsItem* sceneItem, sceneItems) {
-                climate_enemies* gotas = dynamic_cast<climate_enemies*>(sceneItem);
-                if (gotas != nullptr) {
-                    gotas->hide();
-                }
-            }
+            hideRainDrops();
+
             resetGame();
             return; // Salir de la función para evitar colisiones adicionales en el mismo nivel
         }
     }
 }
+
+void game::hideRainDrops()
+{
+    QList<QGraphicsItem*> sceneItems = items();
+    foreach (QGraphicsItem* sceneItem, sceneItems) {
+        climate_enemies* gotas = dynamic_cast<climate_enemies*>(sceneItem);
+        if (gotas != nullptr) {
+            gotas->hide();
+        }
+    }
+}
+
+void game::createSegureZone()
+{
+    zoneSecure = new save_zone();
+    addItem(zoneSecure);
+    zoneSecure->setPos(850,300);
+    zoneSecure->changecurrentpixmap(0,0);
+    zoneSecure->set_ampliar(1);
+}
+
+
+void game::removeSegureZone()
+{
+    removeItem(zoneSecure);
+    delete zoneSecure;
+    zoneSecure = nullptr;
+}
+
+void game::updatePuntaje()
+{
+    QString puntajeText = QString::number(puntaje);
+    emit updatePuntajeSignal(puntajeText);
+}
+
+
+
